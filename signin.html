@@ -1,0 +1,120 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+
+<!--<head>-->
+  <!--<link href='//fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>-->
+  <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">-->
+  <!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">-->
+  <!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+
+  <!--&lt;!&ndash;google &ndash;&gt;-->
+  <!--<script src="//apis.google.com/js/platform.js?onload=init" async defer></script>`-->
+
+  <!--<meta name="google-signin-client_id"-->
+    <!--content="144216199848-1vgi5e4dpopk9j16mtfae5n8rq92v9bl.apps.googleusercontent.com">-->
+
+<!--</head>-->
+
+<!--<body>-->
+  <!--<div class="container">-->
+
+
+    <!--&lt;!&ndash; start Google Start Login &ndash;&gt;-->
+    <!--<h1>Sign with your Google Account</h1>-->
+    <!--<div id="gbutton" ></div>-->
+    <!--<script>-->
+      <!--function init() {-->
+        <!--gapi.load('auth2', function () {-->
+          <!--gapi.signin2.render('gbutton', {-->
+            <!--scope: 'email',-->
+            <!--onsuccess: offlineAccess-->
+          <!--});-->
+
+
+        <!--});-->
+      <!--}-->
+      <!--function offlineAccess(googleUser) {-->
+        <!--var profile = googleUser.getBasicProfile();-->
+        <!--console.log("ID: " + profile.getId()); // Don't send this directly to your server!-->
+        <!--console.log('Full Name: ' + profile.getName());-->
+        <!--console.log('Given Name: ' + profile.getGivenName());-->
+        <!--console.log('Family Name: ' + profile.getFamilyName());-->
+        <!--console.log("Image URL: " + profile.getImageUrl());-->
+        <!--console.log("Email: " + profile.getEmail());-->
+
+        <!--// request offline access-->
+        <!--gapi.auth2.getAuthInstance().grantOfflineAccess({ "prompt": "consent" }).then(function (resp) {-->
+          <!--var auth_code = resp.code;-->
+          <!--console.log(resp);-->
+          <!--$.ajax({-->
+            <!--type: "POST",-->
+            <!--url: "{{url_for('gconnect')}}?state={{state}}",-->
+            <!--processData: false,-->
+            <!--contentType: 'application/octet-stream; charset=utf-8',-->
+            <!--data: auth_code,-->
+            <!--success: function (result) {-->
+              <!--$("body").html(result);-->
+              <!--setTimeout(function () { window.location.href = '/' }, 3000);-->
+
+            <!--}-->
+          <!--});-->
+        <!--});-->
+      <!--}-->
+    <!--</script>-->
+
+    <!--&lt;!&ndash; start Google End Login &ndash;&gt;-->
+
+
+
+
+
+
+
+  <!--</div>-->
+<!--</body>-->
+
+<!--</html>-->
+
+
+{% extends "main.html" %}
+{% block content %}
+<h1>Press the button to sign in!</h1>
+<br>
+<button id="signinButton">Sign In with Google</button>
+<div id="result"></div>
+<script>
+    $('#signinButton').click(function () {
+        function signInCallback(authResult) {
+            if (authResult['code']) {
+                // Hide the sign-in button now that the user is authorized
+                $('#signinButton').attr('style', 'display:none');
+                // Send the one-time-use code to the server, if the server responds,
+                // write a 'login successful' message to the web page and then
+                // redirect back to the main restaurants page
+                $.ajax({
+                    type: 'POST',
+                    url: '/gconnect?state={{STATE}}',
+                    processData: false,
+                    data: authResult['code'],
+                    contentType: 'application/octet-stream; charset=utf-8',
+                    success: function (result) {
+                        // Handle or verify the server response if necessary.
+                        if (result) {
+                            $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...');
+                            setTimeout(function () {
+                                window.location.href = "/";
+                            }, 4000);
+                        } else if (authResult['error']) {
+                            console.log('There was an error: ' + authResult['error']);
+                        } else {
+                            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                        }
+                    }
+                });
+            }
+        }
+    auth2.grantOfflineAccess().then(signInCallback);
+    })
+</script>
+<!--END GOOGLE PLUS SIGN IN -->
+{% endblock %}

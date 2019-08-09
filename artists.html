@@ -1,0 +1,42 @@
+{% extends "main.html" %}
+{% block content %}
+
+
+<div class = 'pane'>
+<h1>Artists</h1>
+{% with flash_messages = get_flashed_messages() %}
+{% if flash_messages %}
+<ul>
+	{% for flash_message in flash_messages %}
+		<li> <strong> {{flash_message}} </strong></li>
+	{% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+{% if 'username' not in session %}
+
+                <a href = "{{url_for('showLogin')}}">Sign In</a>
+
+            {% else %}
+                <a href = "{{url_for('logout')}}">Sign Out</a>
+{% endif %}
+
+
+{% if 'username' in session %}
+
+    <a href="{{url_for('newArtist')}}" > <h3> Create a New Artist </h3> </a>
+
+{% endif %}
+
+
+{% for artist in artists %}
+
+
+<a href = "{{url_for('showStyle', artist_id = artist.id)}}"> <p>{{artist.style}}</p></a>
+
+
+{% endfor %}
+
+</div>
+{% endblock %}

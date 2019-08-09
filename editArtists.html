@@ -1,0 +1,41 @@
+{% extends "main.html" %}
+{% block content %}
+	<h1>Edit {{name.name}}</h1>
+	<div class="row">
+			<form action="{{ url_for('editArtist', name_id = name.id)}}" method = "post">
+				<div class="form-group">
+					<label for="name">Name:</label>
+					<input type ="text" class="form-control" name="name" value="{{name.name }}">
+					<div class="padding-bottom"></div>
+
+					<label for="description">Description:</label>
+					<textarea class="form-control" maxlength="250" rows="3" name="description"
+							  placeholder="Description of the artist"></textarea>
+
+					<label for="type">Type:</label>
+
+					<div class="radio">
+						<select name='type' onchange='CheckType(this.value);'>
+							{% for i in types %}
+								<option value={{ i.id }}>{{ i.style }}</option>
+							{% endfor %}
+							<option value="other">Other</option>
+						</select>
+
+					</div>
+
+					<div>
+						<input type="text" name="other" id="other" style='display:none;' placeholder="Please Specify"/>
+					</div>
+
+					<button type="submit" class="btn btn-default" id="submit" type="submit">
+					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Save</button>
+					<a href = "{{url_for('showArtists')}}">
+						<button class="btn btn-default delete">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</button>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}

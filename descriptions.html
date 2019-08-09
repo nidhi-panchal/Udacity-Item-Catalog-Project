@@ -1,0 +1,49 @@
+<html>
+
+<head>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+	</head>
+
+
+<body>
+<div class = 'pane'>
+	{% with flash_messages = get_flashed_messages() %}
+	{% if flash_messages %}
+	<ul>
+		{% for flash_message in flash_messages %}
+			<li> <strong> {{flash_message}} </strong></li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+	{% endwith %}
+	
+{% if 'username' not in session %}
+	
+					<a href = "{{url_for('showLogin')}}">Sign In</a>
+	
+				{% else %}
+					<a href = "{{url_for('logout')}}">Sign Out</a>
+{% endif %}
+	
+	
+	
+{% if 'username' in session %}
+	
+		<a href="{{url_for('editArtist', name_id=description.id)}}" > <h3> Edit Artist </h3> </a>
+{% endif %}
+
+{% if 'username' in session %}
+	
+		<a href="{{url_for('deleteArtist', name_id=description.id)}}" > <h3> Delete Artist </h3> </a>
+{% endif %}
+	
+<h3>{{description.name}}</h3> </a>
+
+
+<p>{{description.description}}</p></a>
+
+
+</div>
+</body>
+
+</html>
